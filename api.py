@@ -11,8 +11,10 @@ import click
 from urllib.parse import urljoin
 
 from utils.logger import get_logger
+from model.switchbot_device import SwitchbotDevice
 
 LOGGER = get_logger(__name__)
+
 
 @dataclasses.dataclass
 class SwitchBotApi:
@@ -27,13 +29,13 @@ class SwitchBotApi:
         """
         nonce = uuid.uuid4()
         t = int(round(time.time() * 1000))  # NOTE: *1000ってなんだろう。。
-        string_to_sign = '{}{}{}'.format(self.token, t, nonce)
+        string_to_sign = "{}{}{}".format(self.token, t, nonce)
 
         sign = base64.b64encode(
             hmac.new(
                 bytes(self.secret, "utf-8"),
                 msg=bytes(string_to_sign, "utf-8"),
-                digestmod=hashlib.sha256
+                digestmod=hashlib.sha256,
             ).digest()
         )
 
@@ -49,10 +51,9 @@ class SwitchBotApi:
             "t": str(t),
             "sign": sign,
             "nonce": str(nonce),
-
             # 本当はPOSTとかのときだけで良い
             "Content-Type": "application/json",
-            "charset": "utf8"
+            "charset": "utf8",
         }
 
     def _do_get_request(self, endpoint: str) -> requests.Response():
@@ -72,20 +73,32 @@ class SwitchBotApi:
         LOGGER.debug(url)
         LOGGER.debug(headers)
 
-        response =  requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers)
         if response.status_code != 200:
             raise ValueError("request failed: {}".format(response.content))
 
         return response
 
-    def get_devices(self) -> dict:
+    def get_devices(self) -> list[SwitchbotDevice]:
         """デバイス一覧取得
 
         Returns:
-            dict: `/v1.1/devices`のJSONをそのままdictにしただけ
+            List[SwitchbotDevice]: デバイスのリスト
         """
         response = self._do_get_request("/v1.1/devices")
-        return json.loads(response.content)
+        content = json.loads(response.content)
+        device_list = content.get("body", {}).get("deviceList", [])
+        devices = [
+            SwitchbotDevice(
+                deviceId=device.get("deviceId"),
+                deviceName=device.get("deviceName"),
+                deviceType=device.get("deviceType"),
+                enableCloudService=device.get("enableCloudService"),
+                hubDeviceId=device.get("hubDeviceId")
+            )
+            for device in device_list
+        ]
+        return devices
 
     def get_thermal_info(self, thermal_device_id: str) -> dict:
         """温度情報取得
@@ -101,6 +114,7 @@ class SwitchBotApi:
         content = response.content
         return json.loads(content)
 
+
 @click.command()
 @click.argument("api")
 @click.option("--device_id")
@@ -109,5 +123,7 @@ def main(api: str, device_id: str):
         print(SwitchBotApi().get_devices())
     elif api == "thermal_info":
         print(SwitchBotApi().get_thermal_info(device_id))
+
+
 if __name__ == "__main__":
     main()
