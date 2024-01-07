@@ -1,0 +1,5 @@
+pyyaml
+functions-framework
+flask
+requests
+click
