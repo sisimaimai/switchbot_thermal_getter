@@ -1,0 +1,2 @@
+# switchbot_thermal_getter
+Switchbotの温度を取得するFunction
