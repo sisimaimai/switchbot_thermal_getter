@@ -9,6 +9,7 @@ import dataclasses
 import requests
 import click
 from urllib.parse import urljoin
+from model.thermal_info import ThermalInfo
 
 from utils.logger import get_logger
 from model.switchbot_device import SwitchbotDevice
@@ -81,6 +82,7 @@ class SwitchBotApi:
 
     def get_devices(self) -> list[SwitchbotDevice]:
         """デバイス一覧取得
+            NOTE: 実は本番では未使用
 
         Returns:
             List[SwitchbotDevice]: デバイスのリスト
@@ -90,29 +92,32 @@ class SwitchBotApi:
         device_list = content.get("body", {}).get("deviceList", [])
         devices = [
             SwitchbotDevice(
-                deviceId=device.get("deviceId"),
-                deviceName=device.get("deviceName"),
-                deviceType=device.get("deviceType"),
-                enableCloudService=device.get("enableCloudService"),
-                hubDeviceId=device.get("hubDeviceId")
+                device_id=device.get("deviceId"),
+                device_name=device.get("deviceName"),
+                device_type=device.get("deviceType"),
+                enable_cloud_service=device.get("enableCloudService"),
+                hub_device_id=device.get("hubDeviceId"),
             )
             for device in device_list
         ]
         return devices
 
-    def get_thermal_info(self, thermal_device_id: str) -> dict:
+    def get_thermal_info(self, thermal_device_id: str) -> ThermalInfo:
         """温度情報取得
 
         Args:
             thermal_device_id (str): センサーのデバイスID
 
         Returns:
-            dict: _description_
+            ThermalInfo: 温度情報
         """
 
         response = self._do_get_request(f"/v1.1/devices/{thermal_device_id}/status")
-        content = response.content
-        return json.loads(content)
+        content = response.content.get("body", {})
+        return ThermalInfo(
+            temperature=content.get("temperature"),
+            humidity=content.get("humidity"),
+        )
 
 
 @click.command()
