@@ -13,6 +13,7 @@ from model.thermal_info import ThermalInfo
 
 from utils.logger import get_logger
 from model.switchbot_device import SwitchbotDevice
+from settings import settings
 
 LOGGER = get_logger(__name__)
 
@@ -20,8 +21,8 @@ LOGGER = get_logger(__name__)
 @dataclasses.dataclass
 class SwitchBotApi:
     base_url: str = "https://api.switch-bot.com"
-    token: str = os.environ["SWITCHBOT_TOKEN"]
-    secret: str = os.environ["SWITCHBOT_SECRET"]
+    token: str = settings.switchbot_token
+    secret: str = settings.switchbot_secret
 
     def _get_header(self) -> str:
         """SwitchBotのAPIを叩く際に必要な共通ヘッダ

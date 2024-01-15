@@ -2,5 +2,7 @@ pyyaml
 functions-framework
 flask
 requests
-click
 pydantic
+pydantic-settings
+click
+pytest
