@@ -13,16 +13,17 @@ from model.thermal_info import ThermalInfo
 
 from utils.logger import get_logger
 from model.switchbot_device import SwitchbotDevice
-from settings import settings
+from settings import Settings
 
 LOGGER = get_logger(__name__)
+SETTINGS = Settings()
 
 
 @dataclasses.dataclass
 class SwitchBotApi:
     base_url: str = "https://api.switch-bot.com"
-    token: str = settings.switchbot_token
-    secret: str = settings.switchbot_secret
+    token: str = SETTINGS.switchbot_token
+    secret: str = SETTINGS.switchbot_secret
 
     def _get_header(self) -> str:
         """SwitchBotのAPIを叩く際に必要な共通ヘッダ
@@ -58,7 +59,7 @@ class SwitchBotApi:
             "charset": "utf8",
         }
 
-    def _do_get_request(self, endpoint: str) -> requests.Response():
+    def _do_get_request(self, endpoint: str) -> requests.Response:
         """GETリクエスト
 
         Args:
@@ -114,7 +115,7 @@ class SwitchBotApi:
         """
 
         response = self._do_get_request(f"/v1.1/devices/{thermal_device_id}/status")
-        content = response.content.get("body", {})
+        content = json.loads(response.content).get("body", {})
         return ThermalInfo(
             temperature=content.get("temperature"),
             humidity=content.get("humidity"),
