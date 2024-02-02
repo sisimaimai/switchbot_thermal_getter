@@ -15,6 +15,23 @@
             "envFile": "${workspaceFolder}/.env",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "launch local function",
+            "type": "python",
+            "request": "launch",
+            "module": "functions_framework",
+            "args": [
+                "--target=main",
+                "--source=main.py",
+                "--debug"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "LOGLEVEL": "DEBUG",
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

@@ -77,8 +77,10 @@ class SwitchBotApi:
         LOGGER.debug(headers)
 
         response = requests.get(url, headers=headers)
+        LOGGER.debug(response)
         if response.status_code != 200:
             raise ValueError("request failed: {}".format(response.content))
+        LOGGER.debug(response.content)
 
         return response
 
