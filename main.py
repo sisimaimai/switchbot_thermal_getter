@@ -1,10 +1,12 @@
+import functions_framework
 from api import SwitchBotApi
 from settings import Settings
-from flask import Flask, jsonify, request, Response
+from flask import Response
 
 SETTINGS = Settings()
 
 
+@functions_framework.http
 def main(request) -> Response:
     api = SwitchBotApi()
     device_id = request.args.get("device_id")
