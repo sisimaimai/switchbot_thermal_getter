@@ -1,15 +1,20 @@
+import datetime
+
 import functions_framework
+import flask
+
 from api import SwitchBotApi
 from settings import Settings
-from flask import Response
 
 SETTINGS = Settings()
 
 
 @functions_framework.http
-def main(request) -> Response:
-    api = SwitchBotApi()
+def main(request: flask.Request) -> flask.Response:
     device_id = request.args.get("device_id")
+    now = datetime.datetime.now()
+
+    api = SwitchBotApi()
     thermal_info = api.get_thermal_info(device_id)
 
-    return thermal_info.model_dump_json()
+    return flask.jsonify({"measured_at": now.isoformat()} | thermal_info.dict())
