@@ -4,13 +4,19 @@
 （実際にリクエストするのであまり良くない。。ロジックの精緻なテストと言うより、手動でポチポチpython -mするのを避ける用）
 """
 
+import os
 from api import SwitchBotApi as API
-from settings import Settings
+
+TEST_TARGET_DEVICE_ID = os.environ.get("TEST_TARGET_DEVICE_ID", None)
 
 
 def test_get_thermal_info():
     api = API()
-    device_id = Settings().device_ids[0]  # とりあえず.envで指定している1つ目のデバイスでテスト
+
+    # テスト対象のデバイスIDを取得する
+    if TEST_TARGET_DEVICE_ID is None:
+        raise ValueError("テスト用デバイスIDが指定されていません。.envにTEST_TARGET_DEVICE_IDを指定してください。")
+    device_id = TEST_TARGET_DEVICE_ID
 
     # 温度を取得する
     result = api.get_thermal_info(device_id)
