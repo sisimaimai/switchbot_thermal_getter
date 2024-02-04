@@ -17,4 +17,4 @@ def main(request: flask.Request) -> flask.Response:
     api = SwitchBotApi()
     thermal_info = api.get_thermal_info(device_id)
 
-    return flask.jsonify({"measured_at": now.isoformat()} | thermal_info.dict())
+    return thermal_info.model_dump_json()

@@ -1,18 +1,20 @@
+import datetime
 import json
 import time
 import hashlib
 import hmac
 import base64
 import uuid
-import os
 import dataclasses
+from zoneinfo import ZoneInfo
+
 import requests
 import click
 from urllib.parse import urljoin
-from model.thermal_info import ThermalInfo
 
 from utils.logger import get_logger
 from model.switchbot_device import SwitchbotDevice
+from model.thermal_info import ThermalInfo
 from settings import Settings
 
 LOGGER = get_logger(__name__)
@@ -119,6 +121,8 @@ class SwitchBotApi:
         response = self._do_get_request(f"/v1.1/devices/{thermal_device_id}/status")
         content = json.loads(response.content).get("body", {})
         return ThermalInfo(
+            device_id=thermal_device_id,
+            measured_at=datetime.datetime.now(ZoneInfo("Asia/Tokyo")),
             temperature=content.get("temperature"),
             humidity=content.get("humidity"),
         )
