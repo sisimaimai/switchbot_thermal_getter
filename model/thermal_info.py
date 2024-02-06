@@ -19,4 +19,4 @@ class ThermalInfo(BaseModel):
 
     @field_serializer("measured_at")
     def serialize_dt(self, measured_at: datetime.datetime) -> str:
-        return measured_at.isoformat()
+        return measured_at.replace(tzinfo=None).isoformat()  # タイムゾーンを削除してシリアライズ
