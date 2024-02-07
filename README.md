@@ -11,7 +11,7 @@ curl "http://localhost:8080/?device_id={デバイスID}"
 テストはvscodeのTestingでpytestを呼び出して実行。
 
 ## デプロイ
-settings.pyで指定されている環境変数を `.emv.prod.yaml` として用意した上で↓を実行。
+settings.pyで指定されている環境変数を `.env.prod.yaml` として用意した上で↓を実行。
 
 ```bash
 gcloud functions deploy get-switchbot-thermal \
