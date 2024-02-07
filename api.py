@@ -84,6 +84,17 @@ class SwitchBotApi:
 
         response = requests.get(url, headers=headers)
         LOGGER.debug(response)
+
+        LOGGER.info(
+            {
+                "method": "GET",
+                "url": url,
+                "status_code": response.status_code,
+                "content": response.content,
+                "elapsed_seconds": response.elapsed.total_seconds(),
+            }
+        )
+
         if response.status_code != 200:
             raise SwitchBotAPIRequestFailedError(f"request failed: {response.content}")
         LOGGER.debug(response.content)
