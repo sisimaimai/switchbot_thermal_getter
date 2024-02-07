@@ -15,6 +15,8 @@ settings.pyで指定されている環境変数を `.emv.prod.yaml` として用
 
 ```bash
 gcloud functions deploy get-switchbot-thermal \
+    --no-allow-unauthenticated \
+    --ingress-settings=internal-only \
     --gen2 \
     --entry-point=main \
     --region=us-central1 \
@@ -25,5 +27,6 @@ gcloud functions deploy get-switchbot-thermal \
     --max-instances=3 \
     --env-vars-file=.env.prod.yaml \
     --timeout=1m \
-    --trigger-http
+    --trigger-http \
+    --concurrency=1
 ```
