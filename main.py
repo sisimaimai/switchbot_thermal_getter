@@ -17,6 +17,6 @@ def main(request: flask.Request) -> flask.Response:
     try:
         thermal_info = api.get_thermal_info(device_id)
     except SwitchBotAPIRequestFailedError as e:
-        return flask.Response(str(e), status=500)
+        return flask.Response(str(e), status=503)
 
     return thermal_info.model_dump_json()
