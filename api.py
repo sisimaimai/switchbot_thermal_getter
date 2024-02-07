@@ -21,6 +21,10 @@ LOGGER = get_logger(__name__)
 SETTINGS = Settings()
 
 
+class SwitchBotAPIRequestFailedError(Exception):
+    pass
+
+
 @dataclasses.dataclass
 class SwitchBotApi:
     base_url: str = "https://api.switch-bot.com"
@@ -81,7 +85,7 @@ class SwitchBotApi:
         response = requests.get(url, headers=headers)
         LOGGER.debug(response)
         if response.status_code != 200:
-            raise ValueError("request failed: {}".format(response.content))
+            raise SwitchBotAPIRequestFailedError(f"request failed: {response.content}")
         LOGGER.debug(response.content)
 
         return response
