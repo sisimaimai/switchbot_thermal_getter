@@ -1,5 +1,6 @@
 # switchbot_thermal_getter
-Switchbotの温度を取得するFunction
+自宅のSwitchbotの温度を定期的に取得するためのCloudFunctionsのコードです。
+Switchbotからのデータ取得は https://github.com/OpenWonderLabs/SwitchBotAPI を利用しています。
 
 ## 開発
 
